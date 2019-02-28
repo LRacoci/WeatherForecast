@@ -2,7 +2,7 @@
 
 ## Features Requirements:
 
-* Using any weather APi, request the weather from any location;
+* Using any weather API, request the weather from any location;
 
 * Create an UI that can show next weather's from this location;
 
