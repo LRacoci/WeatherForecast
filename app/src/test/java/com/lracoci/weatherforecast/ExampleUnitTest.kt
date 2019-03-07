@@ -1,4 +1,4 @@
-package com.exercise.weatherforecastapp
+package com.lracoci.weatherforecast
 
 import org.junit.Test
 
