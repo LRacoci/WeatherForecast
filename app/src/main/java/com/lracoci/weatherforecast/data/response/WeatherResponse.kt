@@ -1,17 +1,23 @@
 package com.lracoci.weatherforecast.data.response
 
+import com.lracoci.weatherforecast.data.response.weather.Clouds
+import com.lracoci.weatherforecast.data.response.weather.Coord
+import com.lracoci.weatherforecast.data.response.weather.Sys
+import com.lracoci.weatherforecast.data.response.weather.Weather
+
+
 data class WeatherResponse(
-        val coord: Coord,
-        val weather: List<Weather>,
-        val base: String,
-        val main: Main,
-        val wind: Wind,
-        val clouds: Clouds,
-        val dt: Int,
-        val sys: Sys,
-        val id: Int,
-        val name: String,
-        val cod: Int
+        val coord: Coord = Coord(),
+        val weather: List<Weather> = listOf(Weather()),
+        val base: String = "base",
+        val main: Main = Main(),
+        val wind: Wind = Wind(),
+        val clouds: Clouds = Clouds(),
+        val dt: Int = 0,
+        val sys: Sys = Sys(),
+        val id: Int = 0,
+        val name: String = "name",
+        val cod: Int = 0
 )
 
 // {

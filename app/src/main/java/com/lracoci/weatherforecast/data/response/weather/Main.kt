@@ -3,15 +3,17 @@ package com.lracoci.weatherforecast.data.response
 import com.google.gson.annotations.SerializedName
 
 data class Main(
-        val temp: Double,
-        val pressure: Double,
-        val humidity: Int,
-        @SerializedName("temp_min")
-        val tempMin: Double,
-        @SerializedName("temp_max")
-        val tempMax: Double,
+        val pressure: Double = .0,
+        val humidity: Int = 0,
         @SerializedName("sea_level")
-        val seaLevel: Double,
+        val seaLevel: Double = .0,
+        val temp: Double = .0,
         @SerializedName("grnd_level")
-        val grndLevel: Double
+        val grndLevel: Double = .0,
+        @SerializedName("temp_min")
+        val tempMin: Double = .0,
+        @SerializedName("temp_max")
+        val tempMax: Double = .0,
+        @SerializedName("temp_kf")
+        val tempKf: Double = .0
 )

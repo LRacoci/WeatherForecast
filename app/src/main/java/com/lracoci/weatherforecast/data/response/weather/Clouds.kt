@@ -1,5 +1,5 @@
-package com.lracoci.weatherforecast.data.response
+package com.lracoci.weatherforecast.data.response.weather
 
 data class Clouds(
-        val all: Int
+        val all: Int = 0
 )
