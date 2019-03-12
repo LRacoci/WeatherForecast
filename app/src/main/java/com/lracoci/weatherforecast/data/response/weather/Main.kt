@@ -7,13 +7,14 @@ data class Main(
         val humidity: Int = 0,
         @SerializedName("sea_level")
         val seaLevel: Double = .0,
-        val temp: Double = .0,
+        @SerializedName("temp")
+        val temperatureKelvin: Double = .0,
         @SerializedName("grnd_level")
-        val grndLevel: Double = .0,
+        val groundLevel: Double = .0,
         @SerializedName("temp_min")
-        val tempMin: Double = .0,
+        val minTemperature: Double = .0,
         @SerializedName("temp_max")
-        val tempMax: Double = .0,
+        val maxTemperature: Double = .0,
         @SerializedName("temp_kf")
         val tempKf: Double = .0
 )

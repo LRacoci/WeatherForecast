@@ -1,24 +1,41 @@
 package com.lracoci.weatherforecast.data.response
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
+import com.lracoci.weatherforecast.data.response.weather.*
 
-import com.lracoci.weatherforecast.data.response.weather.Clouds
-import com.lracoci.weatherforecast.data.response.weather.Coord
-import com.lracoci.weatherforecast.data.response.weather.Sys
-import com.lracoci.weatherforecast.data.response.weather.Weather
-
-
+//@TypeConverters(Weather.class)
+@Entity(tableName = "weather_response")
 data class WeatherResponse(
-        val coord: Coord = Coord(),
+        @Embedded(prefix = "coord_")
+        @SerializedName("coord")
+        val geoLocaton: GeoLocation = GeoLocation(),
         val weather: List<Weather> = listOf(Weather()),
         val base: String = "base",
+        @SerializedName("dt")
+        val utcUnixInstant: Long = 0,
+        @SerializedName("main")
+        @Embedded(prefix = "main_")
         val main: Main = Main(),
+        @Embedded(prefix = "wind_")
         val wind: Wind = Wind(),
+        @Embedded(prefix = "clouds_")
         val clouds: Clouds = Clouds(),
-        val dt: Int = 0,
+        @Embedded(prefix = "rain_")
+        val rain: Rain = Rain(),
+        @Embedded(prefix = "snow_")
+        val snow: Snow = Snow(),
+        @Embedded(prefix = "sys_")
         val sys: Sys = Sys(),
-        val id: Int = 0,
-        val name: String = "name",
-        val cod: Int = 0
-)
+        @SerializedName("id")
+        val cityId: Int = 0,
+        @SerializedName("name")
+        val cityName: String = "name"
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id : Int = 0
+}
 
 // {
 //    "coord": {
@@ -50,7 +67,7 @@ data class WeatherResponse(
 //    "clouds": {
 //        "all": 0
 //    },
-//    "dt": 1485792967,
+//    "utcUnixInstant": 1485792967,
 //    "sys": {
 //        "message": 0.0025,
 //        "country": "JP",
