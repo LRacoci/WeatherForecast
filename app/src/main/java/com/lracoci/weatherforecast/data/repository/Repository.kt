@@ -14,7 +14,6 @@ import com.resocoder.forecastmvvm.data.network.ApiServices
 import com.resocoder.forecastmvvm.data.network.FORECAST_DAYS_COUNT
 import kotlinx.coroutines.*
 import org.threeten.bp.Instant
-import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
@@ -48,11 +47,11 @@ class Repository (
     private val weatherDao = db.weatherDao()
     private val forecastDao = db.forecastDao()
     private val openWeatherApiService = OpenWeatherApiService(appContext)
-    private val apiService = ApiServices(openWeatherApiService)
     private val locationProvider = LocationProvider(appContext)
+    private val apiService = ApiServices(openWeatherApiService)
 
     val weather by lazyDeferred {
-        getCurrentWeather()
+        getCurrentWeather().value ?: apiService.weather.value
     }
 
     init {
@@ -74,12 +73,13 @@ class Repository (
         if (lastWeather == null
                 || locationProvider.hasLocationChanged(lastWeather)) {
             fetchWeather()
-            //fetchFutureWeather()
+            fetchForecast()
             return
         }
-        val instant = Instant.ofEpochSecond(lastWeather.utcUnixInstant)
+        val instant = Instant.ofEpochSecond(lastWeather.dt)
         val zoneId = ZoneId.of("UTC")
         val zonedDataTime = ZonedDateTime.ofInstant(instant, zoneId)
+
         if (isFetchCurrentNeeded(zonedDataTime))
             fetchWeather()
 
@@ -93,14 +93,17 @@ class Repository (
     }
 
     @WorkerThread
-    private suspend fun fetchWeather() {
+    private suspend fun fetchWeather(): WeatherResponse {
         val geoLocation = locationProvider.getPreferredLocationString()
         try {
             val downloaded = openWeatherApiService.getWeather(geoLocation.lat, geoLocation.lon).await()
             persist(downloaded)
+            return downloaded
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No internet connection.", e)
+            return WeatherResponse()
         }
+
     }
     @WorkerThread
     private suspend fun fetchForecast() {
@@ -109,8 +112,8 @@ class Repository (
     }
     @WorkerThread
     private fun isFetchFutureNeeded(): Boolean {
-        val today = LocalDate.now()
-        val futureWeatherCount = forecastDao.countFutureWeather(today)
+        val now : Long  = Instant.now().epochSecond
+        val futureWeatherCount = forecastDao.countFutureWeather(now)
         return futureWeatherCount < FORECAST_DAYS_COUNT
     }
 
@@ -124,8 +127,8 @@ class Repository (
     @WorkerThread
     private fun persist(forecast : ForecastResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            val today = LocalDate.now()
-            forecastDao.deleteOldEntries(today)
+            val now = Instant.now().epochSecond
+            forecastDao.deleteOldEntries(now)
             val futureWeatherList = forecast.list
             forecastDao.insert(futureWeatherList)
         }

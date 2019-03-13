@@ -7,18 +7,20 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import com.lracoci.weatherforecast.data.response.forecast.City
 import com.lracoci.weatherforecast.data.response.forecast.Forecast
+
 @Entity(tableName = "forecast_response")
 data class ForecastResponse(
         @SerializedName("cod")
-        val code: String,
-        val message: Double,
-        @SerializedName("cnt")
-        val count: Int,
         @Ignore
-        val list: List<Forecast>,
+        var code: String = "",
+        @Ignore
+        var message: Double = 0.0,
+        @SerializedName("cnt")
+        var count: Int = 0,
+        @Ignore
+        var list: List<Forecast> = listOf(Forecast()),
         @Embedded(prefix = "city_")
-        val city: City
-){
-    @PrimaryKey(autoGenerate = true)
-    var id : Int = 0
-}
+        var city: City = City(),
+        @PrimaryKey(autoGenerate = true)
+        var id : Int = 0
+)

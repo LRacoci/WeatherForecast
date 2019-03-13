@@ -10,10 +10,12 @@ import com.lracoci.weatherforecast.data.database.daos.ForecastDao
 import com.lracoci.weatherforecast.data.database.daos.WeatherDao
 import com.lracoci.weatherforecast.data.response.ForecastResponse
 import com.lracoci.weatherforecast.data.response.WeatherResponse
+import com.lracoci.weatherforecast.data.response.forecast.Forecast
 
 @Database(
-        entities = [WeatherResponse::class, ForecastResponse::class],
-        version = 1
+//        exportSchema = false,
+        version = 1,
+        entities = [WeatherResponse::class, ForecastResponse::class, Forecast::class]
 )
 @TypeConverters(WeatherListConverter::class)
 abstract class AppDatabase : RoomDatabase(){
@@ -30,7 +32,7 @@ abstract class AppDatabase : RoomDatabase(){
 
         private fun buildDatabase(context: Context) =
                 Room.databaseBuilder(context.applicationContext,
-                        AppDatabase::class.java, "futureWeatherEntries.db")
+                        AppDatabase::class.java, "weatherForecast.db")
                         .build()
 
     }

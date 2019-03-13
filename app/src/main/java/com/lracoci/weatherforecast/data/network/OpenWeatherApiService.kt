@@ -14,10 +14,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 
-const val APPID = "b6907d289e10d714a6e88b30761fae22"
+const val APPID = "1418c15b23265a66ae55318b98717418"
 
-// http://api.apixu.com/v1/current.json?key=89e8bd89085b41b7a4b142029180210&q=London&lang=en
-// https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=b6907d289e10d714a6e88b30761fae22
+// https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=1418c15b23265a66ae55318b98717418
 
 interface OpenWeatherApiService {
 

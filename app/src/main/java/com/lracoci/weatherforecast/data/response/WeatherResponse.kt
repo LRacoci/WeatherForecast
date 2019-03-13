@@ -1,4 +1,5 @@
 package com.lracoci.weatherforecast.data.response
+import androidx.room.ColumnInfo
 import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -14,7 +15,7 @@ data class WeatherResponse(
         val weather: List<Weather> = listOf(Weather()),
         val base: String = "base",
         @SerializedName("dt")
-        val utcUnixInstant: Long = 0,
+        val dt: Long = 0,
         @SerializedName("main")
         @Embedded(prefix = "main_")
         val main: Main = Main(),
@@ -34,7 +35,7 @@ data class WeatherResponse(
         val cityName: String = "name"
 ) {
     @PrimaryKey(autoGenerate = true)
-    var id : Int = 0
+    var weatherId : Int = 0
 }
 
 // {
@@ -67,7 +68,7 @@ data class WeatherResponse(
 //    "clouds": {
 //        "all": 0
 //    },
-//    "utcUnixInstant": 1485792967,
+//    "dt": 1485792967,
 //    "sys": {
 //        "message": 0.0025,
 //        "country": "JP",

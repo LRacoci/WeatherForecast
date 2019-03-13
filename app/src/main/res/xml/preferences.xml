@@ -1,4 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory
+        android:title="Weather Location">
+        <SwitchPreference
+            android:key="USE_DEVICE_LOCATION"
+            android:title="Use device location"
+            android:summary="Allow the app to get your location"
+            android:defaultValue="true"
+            android:disableDependentsState="true"/>
 
+        <EditTextPreference
+            android:key="LATITUDE"
+            android:title="Latitude"
+            android:summary="The latitude of location for which the weather is displayed"
+            android:defaultValue="Los Angeles"
+            android:dependency="USE_DEVICE_LOCATION"/>
+
+        <EditTextPreference
+            android:key="LONGITUDE"
+            android:title="Longitude"
+            android:summary="The longitude of location for which the weather is displayed"
+            android:defaultValue="Los Angeles"
+            android:dependency="USE_DEVICE_LOCATION"/>
+
+    </PreferenceCategory>
 </PreferenceScreen>

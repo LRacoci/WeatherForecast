@@ -1,8 +1,7 @@
 package com.lracoci.weatherforecast.data.response.forecast
 
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.PrimaryKey
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 import com.google.gson.annotations.SerializedName
 import com.lracoci.weatherforecast.data.response.ForecastResponse
 import com.lracoci.weatherforecast.data.response.weather.Clouds
@@ -12,26 +11,32 @@ import com.lracoci.weatherforecast.data.response.Wind
 import com.lracoci.weatherforecast.data.response.weather.Rain
 import com.lracoci.weatherforecast.data.response.weather.Weather
 //@Entity(tableName = "forecasts")
-@Entity(tableName = "forecasts",
-        foreignKeys = arrayOf(
-                ForeignKey(entity = ForecastResponse::class,
-                        parentColumns = arrayOf("id"),
-                        childColumns = arrayOf("resp_id")
-                )
-        )
+@Entity(tableName = "forecasts"/*,
+    indices = [Index(value = ["resp_id"])],
+    foreignKeys = [ForeignKey(entity = ForecastResponse::class,
+        onDelete=CASCADE,
+        parentColumns = arrayOf("id"),
+        childColumns = arrayOf("resp_id")
+    )]*/
 )
 data class Forecast(
-        val dt: Int = 0,
-        val main: Main = Main(),
-        val weather: List<Weather>,
-        val clouds: Clouds = Clouds(),
-        val wind: Wind = Wind(),
-        val rain: Rain = Rain(),
-        val sys: Sys = Sys(),
+        var dt: Int = 0,
+        @Embedded(prefix = "main_")
+        var main: Main = Main(),
+        @Ignore
+        var weather: List<Weather> = listOf(Weather()),
+        @Embedded(prefix = "clouds_")
+        var clouds: Clouds = Clouds(),
+        @Embedded(prefix = "wind_")
+        var wind: Wind = Wind(),
+        @Embedded(prefix = "rain_")
+        var rain: Rain = Rain(),
+        @Embedded(prefix = "sys_")
+        var sys: Sys = Sys(),
         @SerializedName("dt_txt")
-        val dtTxt: String = "dtTxt"
+        var dtTxt: String = "dtTxt"
 ){
     @PrimaryKey(autoGenerate = true)
-    var id : Int = 0
-    var resp_id : Int = 0
+    var forecastId : Int = 0
+    //var resp_id : Int = 0
 }

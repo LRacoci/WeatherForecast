@@ -71,7 +71,11 @@ class LocationProvider(
             return false
         }
 
-        val deviceLocation = getCustomLocation() ?: return false
+        val deviceLocation = getCustomLocation()
+        if (deviceLocation == GeoLocation()) {
+            return false
+        }
+
         return approximatelyEqual(
                 lastWeatherResponse.geoLocaton,
                 deviceLocation,

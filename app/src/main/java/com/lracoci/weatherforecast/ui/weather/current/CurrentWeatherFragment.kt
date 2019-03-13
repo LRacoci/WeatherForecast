@@ -32,8 +32,10 @@ class CurrentWeatherFragment : ScopedFragment() {
     }
 
     private fun bindUI() = launch {
-        val weather = viewModel.weather
-        textView.text = weather.toString()
+        val weather = viewModel.weather.await()
+        textView?.apply {
+            text = weather.toString()
+        }
         /*weather.observe(this@CurrentWeatherFragment, Observer {
             if (it == null) return@Observer
             textView.text = weather.toString()
