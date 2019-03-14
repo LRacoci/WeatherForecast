@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.weather.future.detail.FutureDetailWeatherFragment">
+    tools:context=".ui.forecast.detail.FutureDetailWeatherFragment">
 
     <TextView
         android:layout_width="match_parent"

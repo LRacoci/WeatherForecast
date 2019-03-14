@@ -9,6 +9,9 @@ apply plugin: "kotlin-kapt"
 apply plugin: 'androidx.navigation.safeargs'
 
 android {
+    dataBinding {
+        enabled true
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.lracoci.weatherforecast"

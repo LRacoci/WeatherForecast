@@ -1,4 +1,4 @@
-package com.lracoci.weatherforecast.ui.weather.future.list
+package com.lracoci.weatherforecast.ui.forecast.detail
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
@@ -9,25 +9,25 @@ import android.view.ViewGroup
 
 import com.lracoci.weatherforecast.R
 
-class FutureListWeatherFragment : Fragment() {
+class FutureDetailWeatherFragment : Fragment() {
 
     companion object {
         fun newInstance() =
-            FutureListWeatherFragment()
+            FutureDetailWeatherFragment()
     }
 
-    private lateinit var viewModel: FutureListWeatherViewModel
+    private lateinit var viewModel: FutureDetailWeatherViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.future_list_weather_fragment, container, false)
+        return inflater.inflate(R.layout.future_detail_weather_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(FutureListWeatherViewModel::class.java)
+        viewModel = ViewModelProviders.of(this).get(FutureDetailWeatherViewModel::class.java)
         // TODO: Use the ViewModel
     }
 

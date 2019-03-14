@@ -13,7 +13,7 @@ data class WeatherResponse(
         @SerializedName("coord")
         val geoLocaton: GeoLocation = GeoLocation(),
         val weather: List<Weather> = listOf(Weather()),
-        val base: String = "base",
+        val base: String = "coroutines",
         @SerializedName("dt")
         val dt: Long = 0,
         @SerializedName("main")
@@ -51,7 +51,7 @@ data class WeatherResponse(
 //            "icon": "01n"
 //        }
 //    ],
-//    "base": "stations",
+//    "coroutines": "stations",
 //    "main": {
 //        "temp": 285.514,
 //        "pressure": 1013.75,

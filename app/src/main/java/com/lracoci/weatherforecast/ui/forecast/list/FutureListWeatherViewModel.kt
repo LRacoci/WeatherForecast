@@ -1,4 +1,4 @@
-package com.lracoci.weatherforecast.ui.weather.future.list
+package com.lracoci.weatherforecast.ui.forecast.list
 
 import androidx.lifecycle.ViewModel;
 

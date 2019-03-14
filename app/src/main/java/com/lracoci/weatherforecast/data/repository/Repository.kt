@@ -51,7 +51,7 @@ class Repository (
     private val apiService = ApiServices(openWeatherApiService)
 
     val weather by lazyDeferred {
-        getCurrentWeather().value ?: apiService.weather.value
+        getCurrentWeather().value ?: apiService.weather.value ?: openWeatherApiService.getWeather().await()
     }
 
     init {

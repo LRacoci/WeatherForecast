@@ -1,4 +1,4 @@
-package com.lracoci.weatherforecast.ui.base
+package com.lracoci.weatherforecast.ui.coroutines
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

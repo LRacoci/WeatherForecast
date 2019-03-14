@@ -13,14 +13,14 @@
             android:key="LATITUDE"
             android:title="Latitude"
             android:summary="The latitude of location for which the weather is displayed"
-            android:defaultValue="Los Angeles"
+            android:defaultValue="35.1"
             android:dependency="USE_DEVICE_LOCATION"/>
 
         <EditTextPreference
             android:key="LONGITUDE"
             android:title="Longitude"
             android:summary="The longitude of location for which the weather is displayed"
-            android:defaultValue="Los Angeles"
+            android:defaultValue="139.8"
             android:dependency="USE_DEVICE_LOCATION"/>
 
     </PreferenceCategory>
