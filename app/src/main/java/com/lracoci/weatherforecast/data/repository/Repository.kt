@@ -17,14 +17,6 @@ import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
-fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
-    return lazy {
-        GlobalScope.async(start = CoroutineStart.LAZY) {
-            block.invoke(this)
-        }
-    }
-}
-
 fun <T> Task<T>.asDeferred(): Deferred<T> {
     val deferred = CompletableDeferred<T>()
 
@@ -50,9 +42,6 @@ class Repository (
     private val locationProvider = LocationProvider(appContext)
     private val apiService = ApiServices(openWeatherApiService)
 
-    val weather by lazyDeferred {
-        getCurrentWeather().value ?: apiService.weather.value ?: openWeatherApiService.getWeather().await()
-    }
 
     init {
         // Watch downloaded data from apiService
@@ -61,7 +50,7 @@ class Repository (
         }
     }
 
-    private suspend fun getCurrentWeather(): LiveData<WeatherResponse> {
+    suspend fun getWeather(): LiveData<WeatherResponse> {
         return withContext(Dispatchers.IO) {
             initWeatherData()
             return@withContext weatherDao.getWeather()

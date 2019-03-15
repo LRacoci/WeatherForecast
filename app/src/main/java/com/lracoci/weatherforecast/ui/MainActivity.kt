@@ -31,7 +31,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-
     private lateinit var navController: NavController
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,7 +48,13 @@ class MainActivity : AppCompatActivity() {
         bottom_nav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
+        if (hasLocationPermission()) {
+            bindLocationManager()
+        } else {
+            requestLocationPermission()
+        }
     }
+
     private fun bindLocationManager() {
         LifecycleBoundLocationManager(
                 this,

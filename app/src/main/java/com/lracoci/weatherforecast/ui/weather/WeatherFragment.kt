@@ -5,12 +5,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 
 import com.lracoci.weatherforecast.R
 import com.lracoci.weatherforecast.ui.coroutines.ScopedFragment
 import kotlinx.android.synthetic.main.current_weather_fragment.*
 import kotlinx.coroutines.launch
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
+import org.threeten.bp.ZonedDateTime
 
 class WeatherFragment : ScopedFragment() {
 
@@ -29,37 +33,18 @@ class WeatherFragment : ScopedFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(WeatherViewModel::class.java)
-        viewModel.updateView()
         bindUI()
     }
 
     private fun bindUI() = launch {
-        viewModel.updateView()
-
-        viewModel.layout.observe(this@WeatherFragment, Observer {
-            when(it.state){
-                WeatherState.DONE -> {
-                    weatherView.text = it.weather.toString()
-                    weatherView.visibility = View.VISIBLE
-                    loading.visibility = View.GONE
-                }
-                WeatherState.ERROR -> {
-                    weatherView.text = it.errorMessage
-                    weatherView.visibility = View.VISIBLE
-                    loading.visibility = View.GONE
-                }
-                WeatherState.LOADING -> {
-                    weatherView.text = "You shuldn't be able to read this"
-                    weatherView.visibility = View.GONE
-                    loading.visibility = View.VISIBLE
-                }
-            }
-        })
-
-        /*weather.observe(this@WeatherFragment, Observer {
+        viewModel.weather.await().observe(this@WeatherFragment, Observer {
             if (it == null) return@Observer
-            textView.text = weather.toString()
-        })*/
-    }
 
+            loading.visibility = View.GONE
+            weatherView.visibility = View.VISIBLE
+            val date = ZonedDateTime.ofInstant(Instant.ofEpochSecond(it.dt), ZoneId.of("UTC"))
+            (activity as? AppCompatActivity)?.supportActionBar?.subtitle = date.toString()
+            weatherView.text = it.toString()
+        })
+    }
 }

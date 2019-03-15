@@ -17,6 +17,7 @@ const val USE_DEVICE_LOCATION = "USE_DEVICE_LOCATION"
 const val CUSTOM_LOCATION = "CUSTOM_LOCATION"
 
 class LocationPermissionNotGrantedException: Exception()
+class InvalidLocationProvided : Exception()
 
 class LocationProvider(
         context: Context
@@ -29,7 +30,7 @@ class LocationProvider(
         val deviceLocationChanged = try {
             hasDeviceLocationChanged(lastWeatherLocation)
         } catch (e: LocationPermissionNotGrantedException) {
-            false
+            true
         }
 
         return deviceLocationChanged || hasCustomLocationChanged(lastWeatherLocation)
@@ -38,7 +39,7 @@ class LocationProvider(
     suspend fun getPreferredLocationString(): GeoLocation{
         if (isUsingDeviceLocation()) {
             try {
-                val deviceLocation = getLastDeviceLocation().await()
+                val deviceLocation = getLastDeviceLocationAsync().await()
                         ?: return getCustomLocation()
                 return GeoLocation(deviceLocation.latitude,deviceLocation.longitude)
             } catch (e: LocationPermissionNotGrantedException) {
@@ -53,10 +54,8 @@ class LocationProvider(
         if (!isUsingDeviceLocation())
             return false
 
-        val deviceLocation = getLastDeviceLocation().await()
-                ?: return false
+        val deviceLocation = getLastDeviceLocationAsync().await()
 
-        // Comparing doubles cannot be done with "=="
         return approximatelyEqual(
                 lastWeatherResponse.geoLocaton,
                 deviceLocation.run {
@@ -88,16 +87,16 @@ class LocationProvider(
     }
 
     private fun getCustomLocation(): GeoLocation {
-        val lat = preferences.getString("lat", "0.0")?.toDoubleOrNull()
-        val lon = preferences.getString("lon", "0.0")?.toDoubleOrNull()
+        val lat = preferences.getString("LATITUDE", "45.0")?.toDoubleOrNull()
+        val lon = preferences.getString("LONGITUDE", "45.0")?.toDoubleOrNull()
         if (lat == null || lon == null) {
-            return GeoLocation()
+            throw Exception("Invalid Latitude and Longitude provided")
         }
         return GeoLocation(lat, lon)
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLastDeviceLocation(): Deferred<Location?> {
+    private fun getLastDeviceLocationAsync(): Deferred<Location> {
         return if (hasLocationPermission())
             fusedLocationProviderClient.lastLocation.asDeferred()
         else
