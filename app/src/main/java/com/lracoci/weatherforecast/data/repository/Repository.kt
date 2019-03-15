@@ -1,13 +1,11 @@
 package com.lracoci.weatherforecast.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.Task
 import com.lracoci.weatherforecast.data.database.AppDatabase
-import com.lracoci.weatherforecast.data.network.NoConnectivityException
-import com.lracoci.weatherforecast.data.network.OpenWeatherApiService
+import com.lracoci.weatherforecast.data.network.OpenWeatherApi
 import com.lracoci.weatherforecast.data.response.ForecastResponse
 import com.lracoci.weatherforecast.data.response.WeatherResponse
 import com.resocoder.forecastmvvm.data.network.ApiServices
@@ -46,22 +44,28 @@ class Repository (
     private val db = AppDatabase(appContext)
     private val weatherDao = db.weatherDao()
     private val forecastDao = db.forecastDao()
-    private val openWeatherApiService = OpenWeatherApiService(appContext)
+    private val openWeatherApiService = OpenWeatherApi(appContext)
     private val locationProvider = LocationProvider(appContext)
     private val apiService = ApiServices(openWeatherApiService)
 
     val weather by lazyDeferred {
-        getCurrentWeather().value ?: apiService.weather.value ?: openWeatherApiService.getWeather().await()
+        getWeather()
+        apiService.weather
     }
 
     init {
         // Watch downloaded data from apiService
-        apiService.forecast.observeForever {
-            persist(it)
+        apiService.apply {
+            weather.observeForever {
+                persist(it)
+            }
+            forecast.observeForever {
+                persist(it)
+            }
         }
     }
 
-    private suspend fun getCurrentWeather(): LiveData<WeatherResponse> {
+    private suspend fun getWeather(): LiveData<WeatherResponse> {
         return withContext(Dispatchers.IO) {
             initWeatherData()
             return@withContext weatherDao.getWeather()
@@ -93,25 +97,27 @@ class Repository (
     }
 
     @WorkerThread
-    private suspend fun fetchWeather(): WeatherResponse {
-        val geoLocation = locationProvider.getPreferredLocationString()
-        try {
+    private suspend fun fetchWeather() {
+        val geoLocation = locationProvider.getLocation()
+        apiService.fetchWeather(geoLocation)
+        /*try {
             val downloaded = openWeatherApiService.getWeather(geoLocation.lat, geoLocation.lon).await()
             persist(downloaded)
             return downloaded
         } catch (e: NoConnectivityException) {
             Log.e("Connectivity", "No internet connection.", e)
             return WeatherResponse()
-        }
+        }*/
 
     }
     @WorkerThread
     private suspend fun fetchForecast() {
-        val geoLocation = locationProvider.getPreferredLocationString()
+        val geoLocation = locationProvider.getLocation()
         apiService.fetchForecast(geoLocation)
     }
     @WorkerThread
     private fun isFetchFutureNeeded(): Boolean {
+
         val now : Long  = Instant.now().epochSecond
         val futureWeatherCount = forecastDao.countFutureWeather(now)
         return futureWeatherCount < FORECAST_DAYS_COUNT
@@ -120,7 +126,7 @@ class Repository (
     @WorkerThread
     private fun persist(weather : WeatherResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            weatherDao.update(weather)
+            weatherDao.insert(weather)
         }
     }
 

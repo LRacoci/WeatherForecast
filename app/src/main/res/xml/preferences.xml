@@ -3,25 +3,27 @@
     <PreferenceCategory
         android:title="Weather Location">
         <SwitchPreference
-            android:key="USE_DEVICE_LOCATION"
-            android:title="Use device location"
-            android:summary="Allow the app to get your location"
             android:defaultValue="true"
-            android:disableDependentsState="true"/>
+            android:disableDependentsState="true"
+            android:key="USE_DEVICE_LOCATION"
+            android:summary="Allow the app to get your location"
+            android:title="Use device location" />
 
         <EditTextPreference
+            android:defaultValue="0"
+            android:dependency="USE_DEVICE_LOCATION"
+            android:inputType="number"
             android:key="LATITUDE"
             android:title="Latitude"
-            android:summary="The latitude of location for which the weather is displayed"
-            android:defaultValue="35.1"
-            android:dependency="USE_DEVICE_LOCATION"/>
+            android:summary="The latitude of location for which the weather is displayed" />
 
         <EditTextPreference
+            android:defaultValue="0"
+            android:dependency="USE_DEVICE_LOCATION"
+            android:inputType="number"
             android:key="LONGITUDE"
             android:title="Longitude"
-            android:summary="The longitude of location for which the weather is displayed"
-            android:defaultValue="139.8"
-            android:dependency="USE_DEVICE_LOCATION"/>
+            android:summary="The longitude of location for which the weather is displayed" />
 
     </PreferenceCategory>
 </PreferenceScreen>

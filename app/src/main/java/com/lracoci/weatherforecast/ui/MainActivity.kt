@@ -49,6 +49,12 @@ class MainActivity : AppCompatActivity() {
         bottom_nav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
+        // Check and request access to device location
+        if (hasLocationPermission()) {
+            bindLocationManager()
+        } else {
+            requestLocationPermission()
+        }
     }
     private fun bindLocationManager() {
         LifecycleBoundLocationManager(
@@ -77,11 +83,20 @@ class MainActivity : AppCompatActivity() {
             permissions: Array<out String>,
             grantResults: IntArray
     ) {
-        if (requestCode == MY_PERMISSION_ACCESS_COARSE_LOCATION) {
-            if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED)
-                bindLocationManager()
-            else
-                Toast.makeText(this, "Please, set location manually in settings", Toast.LENGTH_LONG).show()
+        if (requestCode != MY_PERMISSION_ACCESS_COARSE_LOCATION) return
+        if (grantResults.isEmpty()) {
+            Toast.makeText(this, "onRequestPermissionsResult without grantResults", Toast.LENGTH_LONG).show()
+            return
         }
+        if ( grantResults[0] == PackageManager.PERMISSION_DENIED) {
+            Toast.makeText(this, "Please, set location manually in settings", Toast.LENGTH_LONG).show()
+            return
+        }
+        if ( grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Using device current location", Toast.LENGTH_LONG).show()
+            bindLocationManager()
+            return
+        }
+        Toast.makeText(this, "grantResults[0] == ${grantResults[0]}", Toast.LENGTH_LONG).show()
     }
 }

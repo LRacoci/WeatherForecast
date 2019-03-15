@@ -16,24 +16,24 @@ import retrofit2.http.Query
 
 const val APPID = "1418c15b23265a66ae55318b98717418"
 
-// https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=1418c15b23265a66ae55318b98717418
+// https://api.openweathermap.org/data/2.5/weather?lat=0&lon=0&appid=1418c15b23265a66ae55318b98717418
 
-interface OpenWeatherApiService {
+interface OpenWeatherApi {
 
     @GET("weather")
     fun getWeather(
-            @Query("lat") lat: Double = 35.0,
-            @Query("lon") lon: Double = 139.0
+            @Query("lat") lat: Double,
+            @Query("lon") lon: Double
     ): Deferred<WeatherResponse>
 
     @GET("forecast")
     fun getForecast(
-            @Query("lat") lat: Double = 35.0,
-            @Query("lon") lon: Double = 139.0
+            @Query("lat") lat: Double,
+            @Query("lon") lon: Double
     ): Deferred<ForecastResponse>
 
     companion object {
-        operator fun invoke(appContext: Context): OpenWeatherApiService {
+        operator fun invoke(appContext: Context): OpenWeatherApi {
             val requestInterceptor = Interceptor { chain ->
                 val url = chain.request()
                         .url()
@@ -67,11 +67,11 @@ interface OpenWeatherApiService {
 
             return Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl("https://samples.openweathermap.org/data/2.5/")
+                    .baseUrl("https://api.openweathermap.org/data/2.5/")
                     .addCallAdapterFactory(CoroutineCallAdapterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                    .create(OpenWeatherApiService::class.java)
+                    .create(OpenWeatherApi::class.java)
         }
     }
 }

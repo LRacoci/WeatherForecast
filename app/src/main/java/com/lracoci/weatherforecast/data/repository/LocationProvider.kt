@@ -16,7 +16,9 @@ import kotlinx.coroutines.Deferred
 const val USE_DEVICE_LOCATION = "USE_DEVICE_LOCATION"
 const val CUSTOM_LOCATION = "CUSTOM_LOCATION"
 
-class LocationPermissionNotGrantedException: Exception()
+open class LocationException(message: String) : Exception(message)
+class LocationPermissionNotGrantedException: LocationException("Location Permission not Provided")
+class LocationNotProvidedInPreferences: LocationException("Couldn't get the location from Preferences")
 
 class LocationProvider(
         context: Context
@@ -26,35 +28,33 @@ class LocationProvider(
     private val fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(appContext)
 
     suspend fun hasLocationChanged(lastWeatherLocation: WeatherResponse): Boolean {
-        val deviceLocationChanged = try {
+        return try {
             hasDeviceLocationChanged(lastWeatherLocation)
         } catch (e: LocationPermissionNotGrantedException) {
-            false
+            hasCustomLocationChanged(lastWeatherLocation)
         }
-
-        return deviceLocationChanged || hasCustomLocationChanged(lastWeatherLocation)
     }
 
-    suspend fun getPreferredLocationString(): GeoLocation{
-        if (isUsingDeviceLocation()) {
+    suspend fun getLocation(): GeoLocation{
+        return if (!isUsingDeviceLocation())
+            getCustomLocation()
+        else {
             try {
-                val deviceLocation = getLastDeviceLocation().await()
-                        ?: return getCustomLocation()
-                return GeoLocation(deviceLocation.latitude,deviceLocation.longitude)
+                val deviceLocation = getLastDeviceLocationAsync().await()
+                GeoLocation(deviceLocation.latitude,deviceLocation.longitude)
             } catch (e: LocationPermissionNotGrantedException) {
-                return getCustomLocation()
+                throw LocationException("Permission not provided and no Custom Location " +
+                        "available on settings")
             }
         }
-        else
-            return getCustomLocation()
+
     }
 
     private suspend fun hasDeviceLocationChanged(lastWeatherResponse: WeatherResponse): Boolean {
         if (!isUsingDeviceLocation())
             return false
 
-        val deviceLocation = getLastDeviceLocation().await()
-                ?: return false
+        val deviceLocation = getLastDeviceLocationAsync().await()
 
         // Comparing doubles cannot be done with "=="
         return approximatelyEqual(
@@ -72,9 +72,6 @@ class LocationProvider(
         }
 
         val deviceLocation = getCustomLocation()
-        if (deviceLocation == GeoLocation()) {
-            return false
-        }
 
         return approximatelyEqual(
                 lastWeatherResponse.geoLocaton,
@@ -84,20 +81,20 @@ class LocationProvider(
     }
 
     private fun isUsingDeviceLocation(): Boolean {
-        return preferences.getBoolean(USE_DEVICE_LOCATION, true)
+        return PreferenceManager.getDefaultSharedPreferences(appContext).getBoolean(USE_DEVICE_LOCATION, true)
     }
 
     private fun getCustomLocation(): GeoLocation {
-        val lat = preferences.getString("lat", "0.0")?.toDoubleOrNull()
-        val lon = preferences.getString("lon", "0.0")?.toDoubleOrNull()
+        val lat = PreferenceManager.getDefaultSharedPreferences(appContext).getString("lat", "0.0")?.toDoubleOrNull()
+        val lon = PreferenceManager.getDefaultSharedPreferences(appContext).getString("lon", "0.0")?.toDoubleOrNull()
         if (lat == null || lon == null) {
-            return GeoLocation()
+            throw LocationNotProvidedInPreferences()
         }
         return GeoLocation(lat, lon)
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLastDeviceLocation(): Deferred<Location?> {
+    private fun getLastDeviceLocationAsync(): Deferred<Location> {
         return if (hasLocationPermission())
             fusedLocationProviderClient.lastLocation.asDeferred()
         else

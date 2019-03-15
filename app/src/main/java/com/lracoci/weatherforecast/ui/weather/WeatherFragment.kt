@@ -34,8 +34,6 @@ class WeatherFragment : ScopedFragment() {
     }
 
     private fun bindUI() = launch {
-        viewModel.updateView()
-
         viewModel.layout.observe(this@WeatherFragment, Observer {
             when(it.state){
                 WeatherState.DONE -> {
@@ -49,8 +47,8 @@ class WeatherFragment : ScopedFragment() {
                     loading.visibility = View.GONE
                 }
                 WeatherState.LOADING -> {
-                    weatherView.text = "You shuldn't be able to read this"
-                    weatherView.visibility = View.GONE
+                    weatherView.text = "Loading ..."
+                    weatherView.visibility = View.VISIBLE
                     loading.visibility = View.VISIBLE
                 }
             }

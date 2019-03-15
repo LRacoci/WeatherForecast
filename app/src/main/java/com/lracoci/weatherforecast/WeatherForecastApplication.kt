@@ -9,5 +9,6 @@ class WeatherForecastApplication : Application() {
         super.onCreate()
         AndroidThreeTen.init(this)
         PreferenceManager.setDefaultValues(this, R.xml.preferences, false)
+
     }
 }
