@@ -37,7 +37,7 @@ class WeatherViewModel(app: Application) : ScopedAndroidViewModel(app) {
     }
 
     fun updateView() = launch {
-        var weatherRetrieved : WeatherResponse? = null
+        var weatherRetrieved : LiveData<WeatherResponse>? = null
 
         _layout.value?.apply {
             try {
@@ -46,7 +46,7 @@ class WeatherViewModel(app: Application) : ScopedAndroidViewModel(app) {
                 state = WeatherState.ERROR
                 errorMessage = e.message
             }
-            weatherRetrieved?.let{
+            weatherRetrieved?.observeForever{
                 weather = it
                 state = WeatherState.DONE
             }

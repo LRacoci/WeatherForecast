@@ -4,7 +4,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.lracoci.weatherforecast.data.network.NoConnectivityException
-import com.lracoci.weatherforecast.data.network.OpenWeatherApiService
+import com.lracoci.weatherforecast.data.network.OpenWeather
 import com.lracoci.weatherforecast.data.response.ForecastResponse
 import com.lracoci.weatherforecast.data.response.WeatherResponse
 import com.lracoci.weatherforecast.data.response.weather.GeoLocation
@@ -12,14 +12,14 @@ import com.lracoci.weatherforecast.data.response.weather.GeoLocation
 const val FORECAST_DAYS_COUNT = 7
 
 class ApiServices(
-        private val openWeather: OpenWeatherApiService
+        private val openWeather: OpenWeather
 ) {
 
     private val _weather = MutableLiveData<WeatherResponse>()
     val weather: LiveData<WeatherResponse>
         get() = _weather
 
-    suspend fun fetchCurrentWeather(loc : GeoLocation) {
+    suspend fun fetchWeather(loc : GeoLocation) {
         try {
             val fetchedCurrentWeather = openWeather
                     .getWeather(loc.lat, loc.lon)

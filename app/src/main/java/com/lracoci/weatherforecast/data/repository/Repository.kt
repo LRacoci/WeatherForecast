@@ -1,13 +1,11 @@
 package com.lracoci.weatherforecast.data.repository
 
 import android.content.Context
-import android.util.Log
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.google.android.gms.tasks.Task
 import com.lracoci.weatherforecast.data.database.AppDatabase
-import com.lracoci.weatherforecast.data.network.NoConnectivityException
-import com.lracoci.weatherforecast.data.network.OpenWeatherApiService
+import com.lracoci.weatherforecast.data.network.OpenWeather
 import com.lracoci.weatherforecast.data.response.ForecastResponse
 import com.lracoci.weatherforecast.data.response.WeatherResponse
 import com.resocoder.forecastmvvm.data.network.ApiServices
@@ -46,18 +44,23 @@ class Repository (
     private val db = AppDatabase(appContext)
     private val weatherDao = db.weatherDao()
     private val forecastDao = db.forecastDao()
-    private val openWeatherApiService = OpenWeatherApiService(appContext)
+    private val openWeatherApiService = OpenWeather(appContext)
     private val locationProvider = LocationProvider(appContext)
     private val apiService = ApiServices(openWeatherApiService)
 
-    val weather by lazyDeferred {
-        getCurrentWeather().value ?: apiService.weather.value ?: openWeatherApiService.getWeather().await()
+    val weather : Deferred<LiveData<WeatherResponse>> by lazyDeferred {
+        getCurrentWeather()//.value ?: apiService.weather.value ?: openWeatherApiService.getWeather().await()
     }
 
     init {
         // Watch downloaded data from apiService
-        apiService.forecast.observeForever {
-            persist(it)
+        apiService.apply {
+            weather.observeForever {
+                persist(it)
+            }
+            forecast.observeForever {
+                persist(it)
+            }
         }
     }
 
@@ -93,17 +96,9 @@ class Repository (
     }
 
     @WorkerThread
-    private suspend fun fetchWeather(): WeatherResponse {
+    private suspend fun fetchWeather(){
         val geoLocation = locationProvider.getPreferredLocationString()
-        try {
-            val downloaded = openWeatherApiService.getWeather(geoLocation.lat, geoLocation.lon).await()
-            persist(downloaded)
-            return downloaded
-        } catch (e: NoConnectivityException) {
-            Log.e("Connectivity", "No internet connection.", e)
-            return WeatherResponse()
-        }
-
+        apiService.fetchWeather(geoLocation)
     }
     @WorkerThread
     private suspend fun fetchForecast() {
@@ -120,7 +115,7 @@ class Repository (
     @WorkerThread
     private fun persist(weather : WeatherResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            weatherDao.update(weather)
+            weatherDao.insert(weather)
         }
     }
 

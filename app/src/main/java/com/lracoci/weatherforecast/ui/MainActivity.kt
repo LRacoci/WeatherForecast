@@ -49,6 +49,11 @@ class MainActivity : AppCompatActivity() {
         bottom_nav.setupWithNavController(navController)
 
         NavigationUI.setupActionBarWithNavController(this, navController)
+        if (hasLocationPermission()) {
+            bindLocationManager()
+        } else {
+            requestLocationPermission()
+        }
     }
     private fun bindLocationManager() {
         LifecycleBoundLocationManager(

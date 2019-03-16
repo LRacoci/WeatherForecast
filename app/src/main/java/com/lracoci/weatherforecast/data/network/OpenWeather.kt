@@ -18,7 +18,7 @@ const val APPID = "1418c15b23265a66ae55318b98717418"
 
 // https://samples.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=1418c15b23265a66ae55318b98717418
 
-interface OpenWeatherApiService {
+interface OpenWeather {
 
     @GET("weather")
     fun getWeather(
@@ -33,7 +33,7 @@ interface OpenWeatherApiService {
     ): Deferred<ForecastResponse>
 
     companion object {
-        operator fun invoke(appContext: Context): OpenWeatherApiService {
+        operator fun invoke(appContext: Context): OpenWeather {
             val requestInterceptor = Interceptor { chain ->
                 val url = chain.request()
                         .url()
@@ -71,7 +71,7 @@ interface OpenWeatherApiService {
                     .addCallAdapterFactory(CoroutineCallAdapterFactory())
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-                    .create(OpenWeatherApiService::class.java)
+                    .create(OpenWeather::class.java)
         }
     }
 }
