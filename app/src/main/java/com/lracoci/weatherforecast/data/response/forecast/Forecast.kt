@@ -20,7 +20,7 @@ import com.lracoci.weatherforecast.data.response.weather.Weather
     )]*/
 )
 data class Forecast(
-        var dt: Int = 0,
+        var dt: Long = 0,
         @Embedded(prefix = "main_")
         var main: Main = Main(),
         @Ignore

@@ -12,7 +12,7 @@
         tools:layout="@layout/current_weather_fragment" />
     <fragment
         android:id="@+id/futureListWeatherFragment"
-        android:name="com.lracoci.weatherforecast.ui.forecast.list.FutureListWeatherFragment"
+        android:name="com.lracoci.weatherforecast.ui.forecast.list.ForecastListFragment"
         android:label="future_list_weather_fragment"
         tools:layout="@layout/future_list_weather_fragment" />
     <fragment

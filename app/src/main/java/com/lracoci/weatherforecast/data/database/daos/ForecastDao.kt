@@ -18,5 +18,7 @@ interface ForecastDao {
     fun insert(futureWeatherList: List<Forecast>)
     @Query("select * from forecasts where dt = :instant")
     fun getForecastByDate(instant: Long) : LiveData<Forecast>
+    @Query("select * from forecasts where dt >= :instant")
+    fun getForecastAfter(instant: Long): LiveData<List<Forecast>>
 
 }

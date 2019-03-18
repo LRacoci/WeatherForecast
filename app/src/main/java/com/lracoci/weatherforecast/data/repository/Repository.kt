@@ -58,6 +58,12 @@ class Repository (
             return@withContext weatherDao.getWeather()
         }
     }
+    suspend fun getForecast(dt: Long): LiveData<List<Forecast>> {
+        return withContext(Dispatchers.IO) {
+            initWeatherData()
+            return@withContext forecastDao.getForecastAfter(dt)
+        }
+    }
 
     suspend fun getForecastByDate(dt: Long): LiveData<Forecast> {
         return withContext(Dispatchers.IO) {
