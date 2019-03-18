@@ -2,6 +2,7 @@ package com.lracoci.weatherforecast.ui.forecast.list
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +13,9 @@ import androidx.lifecycle.Observer
 import com.lracoci.weatherforecast.R
 
 import com.lracoci.weatherforecast.ui.coroutines.ScopedFragment
-import com.xwray.groupie.GroupAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import com.xwray.groupie.kotlinandroidextensions.ViewHolder
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.lracoci.weatherforecast.data.response.forecast.Forecast
-import kotlinx.android.synthetic.main.future_list_weather_fragment.*
+import kotlinx.android.synthetic.main.forecast_list_fragment.*
 
 
 class ForecastListFragment  : ScopedFragment(){
@@ -34,7 +31,7 @@ class ForecastListFragment  : ScopedFragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.future_list_weather_fragment, container, false)
+        return inflater.inflate(R.layout.forecast_list_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,6 +52,7 @@ class ForecastListFragment  : ScopedFragment(){
             //initRecyclerView(forecasts)
             forecastView.visibility = View.VISIBLE
             forecastView.text = forecasts.toString()
+            forecastView.movementMethod =  ScrollingMovementMethod()
         })
     }
 

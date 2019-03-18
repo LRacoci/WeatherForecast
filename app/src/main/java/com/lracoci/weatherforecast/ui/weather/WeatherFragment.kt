@@ -5,12 +5,10 @@ import android.os.Bundle
 import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.google.android.material.behavior.SwipeDismissBehavior
 
 import com.lracoci.weatherforecast.R
 import com.lracoci.weatherforecast.ui.coroutines.ScopedFragment
-import kotlinx.android.synthetic.main.current_weather_fragment.*
+import kotlinx.android.synthetic.main.weather_fragment.*
 import kotlinx.coroutines.launch
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
@@ -26,7 +24,7 @@ class WeatherFragment : ScopedFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.current_weather_fragment, container, false)
+        return inflater.inflate(R.layout.weather_fragment, container, false)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
