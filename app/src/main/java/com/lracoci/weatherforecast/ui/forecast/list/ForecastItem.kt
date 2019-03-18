@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.forecast_item.view.*
 
 class ForecastItem(
         private val forecastItem: Forecast
-) /*: Item() {
+) : Item() {
 
     override fun bind(viewHolder: ViewHolder, position: Int) {
         viewHolder.containerView.forecastItemView.text = forecastItem.toString()
@@ -16,4 +16,4 @@ class ForecastItem(
 
     override fun getLayout() = R.layout.forecast_item
 
-}*/
+}

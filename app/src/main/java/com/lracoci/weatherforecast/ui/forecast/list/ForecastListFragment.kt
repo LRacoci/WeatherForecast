@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.xwray.groupie.kotlinandroidextensions.ViewHolder
 
 import com.lracoci.weatherforecast.R
+import com.lracoci.weatherforecast.data.response.forecast.Forecast
 
 import com.lracoci.weatherforecast.ui.coroutines.ScopedFragment
+import com.xwray.groupie.GroupAdapter
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.android.synthetic.main.forecast_list_fragment.*
@@ -49,14 +52,17 @@ class ForecastListFragment  : ScopedFragment(){
             loadingForecast.visibility = View.GONE
 
             (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "Next Week"
-            //initRecyclerView(forecasts)
-            forecastView.visibility = View.VISIBLE
-            forecastView.text = forecasts.toString()
-            forecastView.movementMethod =  ScrollingMovementMethod()
+            initRecyclerView(forecasts)
+            forecastView.apply {
+                visibility = View.VISIBLE
+                text = forecasts.toString()
+                movementMethod =  ScrollingMovementMethod()
+            }
         })
     }
 
-    /*private fun initRecyclerView(items: List<Forecast>) {
+    private fun initRecyclerView(items: List<Forecast>) {
+
         val groupAdapter = GroupAdapter<ViewHolder>().apply {
             addAll(items.map{ForecastItem(it)})
         }
@@ -65,14 +71,15 @@ class ForecastListFragment  : ScopedFragment(){
             layoutManager = LinearLayoutManager(this@ForecastListFragment.context)
             adapter = groupAdapter
         }
+
         // Add Detail
-        groupAdapter.setOnItemClickListener { item, view ->
+        /*groupAdapter.setOnItemClickListener { item, view ->
             (item as? Forecast)?.let {
                 showWeatherDetail(it.dt, view)
             }
-        }
+        }*/
     }
-    private fun showWeatherDetail(dt : Long, view: View) {
+    /*private fun showWeatherDetail(dt : Long, view: View) {
         val actionDetail = ForecastListFragmentDirections.actionDetail(dt)
         Navigation.findNavController(view).navigate(actionDetail)
     }*/
