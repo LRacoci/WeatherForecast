@@ -1,5 +1,6 @@
 package com.lracoci.weatherforecast.data.database.daos
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -15,5 +16,7 @@ interface ForecastDao {
     fun deleteOldEntries(firstInstantToKeep: Long)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(futureWeatherList: List<Forecast>)
+    @Query("select * from forecasts where dt = :instant")
+    fun getForecastByDate(instant: Long) : LiveData<Forecast>
 
 }

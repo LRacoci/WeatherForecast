@@ -55,6 +55,7 @@ class LocationProvider(
             return false
 
         val deviceLocation = getLastDeviceLocationAsync().await()
+                ?: return false
 
         return approximatelyEqual(
                 lastWeatherResponse.geoLocaton,
@@ -71,9 +72,7 @@ class LocationProvider(
         }
 
         val deviceLocation = getCustomLocation()
-        if (deviceLocation == GeoLocation()) {
-            return false
-        }
+
 
         return approximatelyEqual(
                 lastWeatherResponse.geoLocaton,
@@ -96,11 +95,12 @@ class LocationProvider(
     }
 
     @SuppressLint("MissingPermission")
-    private fun getLastDeviceLocationAsync(): Deferred<Location> {
+    private fun getLastDeviceLocationAsync(): Deferred<Location?> {
         return if (hasLocationPermission())
             fusedLocationProviderClient.lastLocation.asDeferred()
-        else
+        else {
             throw LocationPermissionNotGrantedException()
+        }
     }
 
     private fun hasLocationPermission(): Boolean {

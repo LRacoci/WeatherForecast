@@ -6,6 +6,7 @@
     tools:context=".ui.forecast.detail.FutureDetailWeatherFragment">
 
     <TextView
+        android:id="@+id/detailView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:text="Hello" />

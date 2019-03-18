@@ -16,6 +16,10 @@ fun <T> lazyDeferred(block: suspend CoroutineScope.() -> T): Lazy<Deferred<T>> {
 class WeatherViewModel(app: Application) : ScopedAndroidViewModel(app) {
     private val repository = Repository(app.applicationContext)
 
+    fun update() = launch{
+        repository.initWeatherData()
+    }
+
     val weather by lazyDeferred {
         repository.getWeather()
     }

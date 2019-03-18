@@ -10,10 +10,12 @@ import com.lracoci.weatherforecast.data.network.NoConnectivityException
 import com.lracoci.weatherforecast.data.network.OpenWeatherApiService
 import com.lracoci.weatherforecast.data.response.ForecastResponse
 import com.lracoci.weatherforecast.data.response.WeatherResponse
+import com.lracoci.weatherforecast.data.response.forecast.Forecast
 import com.resocoder.forecastmvvm.data.network.ApiServices
 import com.resocoder.forecastmvvm.data.network.FORECAST_DAYS_COUNT
 import kotlinx.coroutines.*
 import org.threeten.bp.Instant
+import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
@@ -56,7 +58,14 @@ class Repository (
             return@withContext weatherDao.getWeather()
         }
     }
-    private suspend fun initWeatherData() {
+
+    suspend fun getForecastByDate(dt: Long): LiveData<Forecast> {
+        return withContext(Dispatchers.IO) {
+            initWeatherData()
+            return@withContext forecastDao.getForecastByDate(dt)
+        }
+    }
+    suspend fun initWeatherData() {
         val lastWeather = weatherDao.getLast()
 
         if (lastWeather == null

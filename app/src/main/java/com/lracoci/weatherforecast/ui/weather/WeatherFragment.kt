@@ -2,11 +2,11 @@ package com.lracoci.weatherforecast.ui.weather
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.behavior.SwipeDismissBehavior
 
 import com.lracoci.weatherforecast.R
 import com.lracoci.weatherforecast.ui.coroutines.ScopedFragment
@@ -17,7 +17,6 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
 class WeatherFragment : ScopedFragment() {
-
     companion object {
         fun newInstance() = WeatherFragment()
     }
@@ -37,6 +36,10 @@ class WeatherFragment : ScopedFragment() {
     }
 
     private fun bindUI() = launch {
+
+        /*(weatherRefresh as SwipeRefreshLayout).setOnRefreshListener {
+            viewModel.update()
+        }*/
         viewModel.weather.await().observe(this@WeatherFragment, Observer {
             if (it == null) return@Observer
 

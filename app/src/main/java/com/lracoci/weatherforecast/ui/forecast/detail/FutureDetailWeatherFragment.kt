@@ -6,10 +6,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
 
 import com.lracoci.weatherforecast.R
+import com.lracoci.weatherforecast.ui.coroutines.ScopedFragment
+import kotlinx.android.synthetic.main.future_detail_weather_fragment.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class FutureDetailWeatherFragment : Fragment() {
+class FutureDetailWeatherFragment : ScopedFragment() {
 
     companion object {
         fun newInstance() =
@@ -29,6 +35,21 @@ class FutureDetailWeatherFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel = ViewModelProviders.of(this).get(FutureDetailWeatherViewModel::class.java)
         // TODO: Use the ViewModel
+        bindUI()
+    }
+
+    private fun bindUI() = launch(Dispatchers.Main) {
+        val futureWeather = viewModel.weather.await()
+
+
+        futureWeather.observe(this@FutureDetailWeatherFragment, Observer { weatherEntry ->
+            if (weatherEntry == null) return@Observer
+
+            (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "Test"
+
+            detailView.text = weatherEntry.toString()
+
+        })
     }
 
 }

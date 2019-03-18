@@ -14,7 +14,7 @@
             android:title="Latitude"
             android:inputType="numberSigned"
             android:summary="The latitude of location for which the weather is displayed"
-            android:defaultValue="66.6"
+            android:defaultValue="64.6"
             android:dependency="USE_DEVICE_LOCATION"/>
 
         <EditTextPreference
