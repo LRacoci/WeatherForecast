@@ -1,4 +1,4 @@
-package com.lracoci.weatherforecast.ui.forecast.list
+package com.lracoci.weatherforecast.ui.forecast
 
 import com.lracoci.weatherforecast.R
 import com.lracoci.weatherforecast.data.response.forecast.Forecast

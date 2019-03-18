@@ -1,4 +1,4 @@
-package com.lracoci.weatherforecast.ui
+package com.lracoci.weatherforecast.ui.main
 
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.OnLifecycleEvent

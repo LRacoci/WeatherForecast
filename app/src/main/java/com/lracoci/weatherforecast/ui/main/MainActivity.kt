@@ -1,4 +1,4 @@
-package com.lracoci.weatherforecast.ui
+package com.lracoci.weatherforecast.ui.main
 
 import android.Manifest
 import android.content.pm.PackageManager

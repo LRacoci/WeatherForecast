@@ -1,8 +1,7 @@
-package com.lracoci.weatherforecast.ui.forecast.list
+package com.lracoci.weatherforecast.ui.forecast
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
-import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -53,11 +52,6 @@ class ForecastListFragment  : ScopedFragment(){
 
             (activity as? AppCompatActivity)?.supportActionBar?.subtitle = "Next Week"
             initRecyclerView(forecasts)
-            forecastView.apply {
-                visibility = View.VISIBLE
-                text = forecasts.toString()
-                movementMethod =  ScrollingMovementMethod()
-            }
         })
     }
 
@@ -71,17 +65,5 @@ class ForecastListFragment  : ScopedFragment(){
             layoutManager = LinearLayoutManager(this@ForecastListFragment.context)
             adapter = groupAdapter
         }
-
-        // Add Detail
-        /*groupAdapter.setOnItemClickListener { item, view ->
-            (item as? Forecast)?.let {
-                showWeatherDetail(it.dt, view)
-            }
-        }*/
     }
-    /*private fun showWeatherDetail(dt : Long, view: View) {
-        val actionDetail = ForecastListFragmentDirections.actionDetail(dt)
-        Navigation.findNavController(view).navigate(actionDetail)
-    }*/
-
 }

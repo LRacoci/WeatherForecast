@@ -13,8 +13,6 @@ interface WeatherDao {
     fun update(weather: WeatherResponse)
     @Query("select * from weather_response order by dt desc limit 1")
     fun getLast(): WeatherResponse?
-    //@Query("select a.* from weather_response a left outer join weather_response b on a.id = b.id and a.dt < b.dt where b.id = null")
-    //@Query("select * from weather_response where dt = ( select MAX(dt) from weather_response group by weatherId)")
     @Query("select * from weather_response order by dt desc limit 1")
     fun getWeather(): LiveData<WeatherResponse>
 }
