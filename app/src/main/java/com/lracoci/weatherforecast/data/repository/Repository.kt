@@ -15,7 +15,6 @@ import com.resocoder.forecastmvvm.data.network.ApiServices
 import com.resocoder.forecastmvvm.data.network.FORECAST_DAYS_COUNT
 import kotlinx.coroutines.*
 import org.threeten.bp.Instant
-import org.threeten.bp.LocalDate
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 
@@ -98,7 +97,7 @@ class Repository (
 
     @WorkerThread
     private suspend fun fetchWeather(): WeatherResponse {
-        val geoLocation = locationProvider.getPreferredLocationString()
+        val geoLocation = locationProvider.getPreferredLocation()
         try {
             val downloaded = openWeatherApiService.getWeather(geoLocation.lat, geoLocation.lon).await()
             persist(downloaded)
@@ -111,7 +110,7 @@ class Repository (
     }
     @WorkerThread
     private suspend fun fetchForecast() {
-        val geoLocation = locationProvider.getPreferredLocationString()
+        val geoLocation = locationProvider.getPreferredLocation()
         apiService.fetchForecast(geoLocation)
     }
     @WorkerThread

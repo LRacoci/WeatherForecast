@@ -36,14 +36,16 @@ class LocationProvider(
         return deviceLocationChanged || hasCustomLocationChanged(lastWeatherLocation)
     }
 
-    suspend fun getPreferredLocationString(): GeoLocation{
+    suspend fun getPreferredLocation(): GeoLocation{
         if (isUsingDeviceLocation()) {
-            try {
-                val deviceLocation = getLastDeviceLocationAsync().await()
-                        ?: return getCustomLocation()
-                return GeoLocation(deviceLocation.latitude,deviceLocation.longitude)
-            } catch (e: LocationPermissionNotGrantedException) {
-                return getCustomLocation()
+            while (true) {
+                try {
+                    getLastDeviceLocationAsync().await()?.let {
+                        return GeoLocation(it.latitude,it.longitude)
+                    }
+                } catch (e: LocationPermissionNotGrantedException) {
+                    continue
+                }
             }
         }
         else
