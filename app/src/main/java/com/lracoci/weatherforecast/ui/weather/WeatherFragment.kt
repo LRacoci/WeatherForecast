@@ -36,7 +36,7 @@ class WeatherFragment : ScopedFragment() {
     private fun bindUI() = launch {
 
         /*(weatherRefresh as SwipeRefreshLayout).setOnRefreshListener {
-            viewModel.update()
+            viewModel.insert()
         }*/
         viewModel.weather.await().observe(this@WeatherFragment, Observer {
             if (it == null) return@Observer

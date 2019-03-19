@@ -38,7 +38,7 @@ class Repository (
     //var weather : LiveData<WeatherResponse> = null
     private val db = AppDatabase(appContext)
     private val weatherDao = db.weatherDao()
-    private val forecastDao = db.forecastDao()
+    private val forecastsDao = db.forecastsDao()
     private val openWeatherApiService = OpenWeatherApiService(appContext)
     private val locationProvider = LocationProvider(appContext)
     private val apiService = ApiServices(openWeatherApiService)
@@ -60,14 +60,14 @@ class Repository (
     suspend fun getForecast(dt: Long): LiveData<List<Forecast>> {
         return withContext(Dispatchers.IO) {
             initWeatherData()
-            return@withContext forecastDao.getForecastAfter(dt)
+            return@withContext forecastsDao.getForecastsAfter(dt)
         }
     }
 
     suspend fun getForecastByDate(dt: Long): LiveData<Forecast> {
         return withContext(Dispatchers.IO) {
             initWeatherData()
-            return@withContext forecastDao.getForecastByDate(dt)
+            return@withContext forecastsDao.getForecastByDate(dt)
         }
     }
     suspend fun initWeatherData() {
@@ -116,14 +116,14 @@ class Repository (
     @WorkerThread
     private fun isFetchFutureNeeded(): Boolean {
         val now : Long  = Instant.now().epochSecond
-        val futureWeatherCount = forecastDao.countFutureWeather(now)
+        val futureWeatherCount = forecastsDao.countFutureWeather(now)
         return futureWeatherCount < FORECAST_DAYS_COUNT
     }
 
     @WorkerThread
     private fun persist(weather : WeatherResponse) {
         GlobalScope.launch(Dispatchers.IO) {
-            weatherDao.update(weather)
+            weatherDao.insert(weather)
         }
     }
 
@@ -131,9 +131,9 @@ class Repository (
     private fun persist(forecast : ForecastResponse) {
         GlobalScope.launch(Dispatchers.IO) {
             val now = Instant.now().epochSecond
-            forecastDao.deleteOldEntries(now)
+            forecastsDao.deleteOldEntries(now)
             val futureWeatherList = forecast.list
-            forecastDao.insert(futureWeatherList)
+            forecastsDao.insert(futureWeatherList)
         }
     }
 

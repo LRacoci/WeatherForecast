@@ -5,20 +5,14 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import com.lracoci.weatherforecast.data.response.forecast.Forecast
-import org.threeten.bp.LocalDate
+import com.lracoci.weatherforecast.data.response.ForecastResponse
 
 @Dao
 interface ForecastDao {
-    @Query("select count(forecastId) from forecasts where dt >= :now")
-    fun countFutureWeather(now: Long): Int
-    @Query("delete from forecasts where dt < :firstInstantToKeep")
-    fun deleteOldEntries(firstInstantToKeep: Long)
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(futureWeatherList: List<Forecast>)
-    @Query("select * from forecasts where dt = :instant")
-    fun getForecastByDate(instant: Long) : LiveData<Forecast>
-    @Query("select * from forecasts where dt >= :instant")
-    fun getForecastAfter(instant: Long): LiveData<List<Forecast>>
-
+    fun insert(forecast: ForecastResponse)
+    @Query("select * from forecast_response order by id desc limit 1")
+    fun getLast(): ForecastResponse?
+    @Query("select * from forecast_response order by id desc limit 1")
+    fun getForecast(): LiveData<ForecastResponse>
 }

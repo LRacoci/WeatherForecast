@@ -23,7 +23,6 @@ data class Forecast(
         var dt: Long = 0,
         @Embedded(prefix = "main_")
         var main: Main = Main(),
-        @Ignore
         var weather: List<Weather> = listOf(Weather()),
         @Embedded(prefix = "clouds_")
         var clouds: Clouds = Clouds(),
